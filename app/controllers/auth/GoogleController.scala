@@ -33,6 +33,7 @@ class GoogleController @Inject()(
 
   def callback() = Action { implicit request =>
     val result = googleOAuthService.callback(request.getQueryString("code").get)
+
     Ok(Json.toJson(result))
   }
 }
