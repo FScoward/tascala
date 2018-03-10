@@ -12,7 +12,7 @@ class TaskController @Inject()(
 ) extends AbstractController(cc) with Circe {
 
   def add = Action(circe.json[TaskCreateRequest]) { implicit request =>
-    println(request.body.convert)
+    println(request.body)
 
     Ok("")
   }

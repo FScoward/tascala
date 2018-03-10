@@ -8,5 +8,17 @@
 ## Application Layer
 - service: アプリケーションサービス    
 
+
+# Run
+```
+docker build -t tascala_mysql .
+
+docker run --name tascala_mysql -e MYSQL_ROOT_PASSWORD=mysql -d -p 3306:3306 tascala_mysql
+```
+
+```
+source .env
+```
+
     
     

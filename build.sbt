@@ -3,7 +3,8 @@ organization := "fscoward"
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file("."))
+  .enablePlugins(PlayScala, ScalikejdbcPlugin)
 
 scalaVersion := "2.12.3"
 
@@ -15,13 +16,16 @@ libraryDependencies ++= Seq(
   ws,
 //  "com.google.oauth-client" % "google-oauth-client" % "1.23.0"
   "com.google.api-client" % "google-api-client" % "1.23.0",
-
   // circe
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
   "io.circe" %% "circe-generic-extras" % circeVersion,
-  "com.dripower" %% "play-circe" % "2609.0"
+  "com.dripower" %% "play-circe" % "2609.0",
+  "org.scalikejdbc" %% "scalikejdbc" % "3.2.0",
+  "org.scalikejdbc" %% "scalikejdbc-config" % "3.2.0",
+  "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.2",
+  "mysql" % "mysql-connector-java" % "6.0.6"
 )
 
 // Adds additional packages into Twirl
