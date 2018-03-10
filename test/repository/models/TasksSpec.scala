@@ -3,6 +3,7 @@ package repository.models
 import scalikejdbc.specs2.mutable.AutoRollback
 import org.specs2.mutable._
 import scalikejdbc._
+import java.time.{ZonedDateTime}
 
 
 class TasksSpec extends Specification {
@@ -36,7 +37,7 @@ class TasksSpec extends Specification {
       count should be_>(0L)
     }
     "create new record" in new AutoRollback {
-      val created = Tasks.create(taskId = 1L, userId = 1L)
+      val created = Tasks.create(taskId = 1L, userId = 1L, title = "MyString")
       created should not beNull
     }
     "save a record" in new AutoRollback {

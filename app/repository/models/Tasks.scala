@@ -1,14 +1,15 @@
 package repository.models
 
 import scalikejdbc._
+import java.time.{ZonedDateTime}
 
 case class Tasks(
   taskId: Long,
   userId: Long,
-  title: Option[String] = None,
+  title: String,
   description: Option[String] = None,
-  deadline: Option[String] = None,
-  estimate: Option[String] = None) {
+  deadline: Option[ZonedDateTime] = None,
+  estimate: Option[Int] = None) {
 
   def save()(implicit session: DBSession = Tasks.autoSession): Tasks = Tasks.save(this)(session)
 
@@ -74,10 +75,10 @@ object Tasks extends SQLSyntaxSupport[Tasks] {
   def create(
     taskId: Long,
     userId: Long,
-    title: Option[String] = None,
+    title: String,
     description: Option[String] = None,
-    deadline: Option[String] = None,
-    estimate: Option[String] = None)(implicit session: DBSession = autoSession): Tasks = {
+    deadline: Option[ZonedDateTime] = None,
+    estimate: Option[Int] = None)(implicit session: DBSession = autoSession): Tasks = {
     withSQL {
       insert.into(Tasks).namedValues(
         column.taskId -> taskId,

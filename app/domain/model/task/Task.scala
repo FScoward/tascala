@@ -10,6 +10,6 @@ case class Task(
     userId: ID[User],
     title: String,
     description: Option[String],
-    deadline: ZonedDateTime,
-    estimate: Int
+    deadline: Option[ZonedDateTime],
+    estimate: Option[Int]
 )
