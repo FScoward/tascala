@@ -1,4 +1,7 @@
-libraryDependencies += "org.hsqldb" % "hsqldb" % "2.3.2"
+libraryDependencies ++= Seq(
+  "org.hsqldb" % "hsqldb" % "2.3.2",
+  "mysql" % "mysql-connector-java" % "5.1.45"
+)
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.12")
 
