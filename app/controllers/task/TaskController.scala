@@ -2,19 +2,43 @@ package controllers.task
 
 import javax.inject.Inject
 
+import domain.model.ID
+import domain.model.task.TaskRepository
+import domain.model.user.User
+import domain.repository.user.UserRepository
 import play.api._
 import play.api.mvc._
 import play.api.mvc.{AbstractController, ControllerComponents}
 import play.api.libs.circe.Circe
+import io.circe.syntax._
 
 class TaskController @Inject()(
-    cc: ControllerComponents
-) extends AbstractController(cc) with Circe {
+    cc: ControllerComponents,
+    repository: TaskRepository,
+    userRepository: UserRepository
+) extends AbstractController(cc)
+    with Circe {
 
-  def add = Action(circe.json[TaskCreateRequest]) { implicit request =>
-    println(request.body)
+  def add(userId: Long) = Action(circe.json[TaskCreateRequest]) {
+    implicit request =>
+      val taskCreateRequest = request.body
 
-    Ok("")
+      val x = for {
+        user <- userRepository
+          .findBy(ID[User](userId))
+          .toRight(BadRequest("")) // todo Either
+      } yield {
+        val task = user.addTask(taskCreateRequest.title,
+                                taskCreateRequest.description,
+                                taskCreateRequest.deadline,
+                                taskCreateRequest.estimate)
+        repository.store(task)
+
+        Ok(task.asJson)
+      }
+
+      x.fold(fa => fa, fb => fb)
+
   }
 
 }

@@ -8,14 +8,16 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow
 import com.google.api.client.http.GenericUrl
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
+import domain.model.auth.GoogleOauth
 import domain.model.auth.google.JsonIdentity
+import domain.model.user.User
+import domain.repository.auth.CredentialRepository
 import play.api.Configuration
-import repository.auth.CredentialRepositoryImpl
 
 @Singleton
 class GoogleOAuthService @Inject()(
     config: Configuration,
-    credentialRepository: CredentialRepositoryImpl
+    credentialRepository: CredentialRepository
 ) {
 
   private val clientId = config.getOptional[String]("oauth.google.client_id")
@@ -32,8 +34,8 @@ class GoogleOAuthService @Inject()(
   val flow =
     new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT,
                                             JSON_FACTORY,
-                                            clientId.get,
-                                            clientSecret.get,
+                                            clientId.getOrElse(throw new NoSuchElementException("client id is not set.")),
+                                            clientSecret.getOrElse(throw new NoSuchElementException("client id is not set.")),
                                             SCOPES).build
 
   def redirectUrl: String = {
@@ -65,7 +67,12 @@ class GoogleOAuthService @Inject()(
     // TODO
     val result = decode[JsonIdentity](jsonIdentity)
     println(result)
-//      credentialRepository.store(x)
+    result.map{ identitty =>
+      val user = User(name = identitty.name)
+      credentialRepository.store(user, GoogleOauth(userId = user.id))
+    }
+//    credentialRepository.store()
+
 
     jsonIdentity
   }

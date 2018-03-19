@@ -5,6 +5,14 @@ import domain.model.task.{Task, TaskRepository}
 import repository.models.Tasks
 
 class TaskRepositoryImpl extends TaskRepository {
+  override def store(task: Task): Unit = Tasks.create(
+    task.id.value,
+    task.userId.value,
+    task.title,
+    task.description,
+    task.deadline,
+    task.estimate
+  )
   override def save(task: Task): Unit = {
     val repoTask = Tasks(
       taskId = task.id.value,

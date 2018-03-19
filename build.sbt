@@ -25,7 +25,9 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc" % "3.2.0",
   "org.scalikejdbc" %% "scalikejdbc-config" % "3.2.0",
   "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.2",
-  "mysql" % "mysql-connector-java" % "6.0.6"
+  "mysql" % "mysql-connector-java" % "6.0.6",
+
+  "org.typelevel" %% "cats-core" % "1.0.1"
 )
 
 // Adds additional packages into Twirl
@@ -33,3 +35,6 @@ libraryDependencies ++= Seq(
 
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "fscoward.binders._"
+
+// for cats
+scalacOptions += "-Ypartial-unification"
