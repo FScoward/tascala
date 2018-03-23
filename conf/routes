@@ -10,7 +10,10 @@ GET     /auth/google/callback       controllers.auth.GoogleController.callback
 
 GET     /user/:userId/tasks                      controllers.task.TaskController.list(userId: Long)
 POST    /user/:userId/tasks                      controllers.task.TaskController.add(userId: Long)
+PUT     /user/:userId/tasks/:taskId              controllers.task.TaskController.update(userId: Long, taskId: Long)
 DELETE  /user/:userId/tasks/:taskId              controllers.task.TaskController.delete(userId: Long, taskId: Long)
+
+PUT     /user/:userId/tasks/:taskId/done         controllers.task.TaskController.done(userId: Long, taskId: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

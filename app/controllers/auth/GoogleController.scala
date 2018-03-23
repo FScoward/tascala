@@ -5,7 +5,7 @@ import javax.inject._
 import play.api._
 import play.api.mvc._
 import play.api.Configuration
-import service.auth.GoogleOAuthService
+import appservice.auth.GoogleOAuthService
 import io.circe.syntax._
 import play.api.libs.json.Json
 

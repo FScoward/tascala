@@ -13,7 +13,7 @@ class DonesSpec extends Specification {
     val d = Dones.syntax("d")
 
     "find by primary keys" in new AutoRollback {
-      val maybeFound = Dones.find(1L, "MyString", null)
+      val maybeFound = Dones.find(1L)
       maybeFound.isDefined should beTrue
     }
     "find by where clauses" in new AutoRollback {
@@ -37,7 +37,7 @@ class DonesSpec extends Specification {
       count should be_>(0L)
     }
     "create new record" in new AutoRollback {
-      val created = Dones.create(taskId = 1L, requiredTime = "MyString")
+      val created = Dones.create(taskId = 1L, requiredTime = 123, doneDateTime = null)
       created should not beNull
     }
     "save a record" in new AutoRollback {
@@ -51,7 +51,7 @@ class DonesSpec extends Specification {
       val entity = Dones.findAll().head
       val deleted = Dones.destroy(entity) == 1
       deleted should beTrue
-      val shouldBeNone = Dones.find(1L, "MyString", null)
+      val shouldBeNone = Dones.find(1L)
       shouldBeNone.isDefined should beFalse
     }
     "perform batch insert" in new AutoRollback {

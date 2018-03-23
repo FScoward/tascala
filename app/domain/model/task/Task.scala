@@ -4,22 +4,30 @@ import java.time.ZonedDateTime
 
 import domain.model.ID
 import domain.model.user.User
-import io.circe.Encoder
-import io.circe.generic.semiauto._
 
-case class Task(
-    id: ID[Task],
-    userId: ID[User],
-    title: String,
-    description: Option[String],
-    deadline: Option[ZonedDateTime],
-    estimate: Option[Int]
-)
+trait Task {
+  val id: ID[Task]
+  val userId: ID[User]
+  val title: String
+  val description: Option[String]
+  val deadline: Option[ZonedDateTime]
+  val estimate: Option[Int]
 
-object Task {
-  implicit val encodeZonedDateTime: Encoder[ZonedDateTime] =
-    Encoder.encodeString.contramap[ZonedDateTime](_.toString)
-  implicit def idEncoder[T]: Encoder[ID[T]] =
-    Encoder.encodeString.contramap[ID[T]](_.value.toString)
-  implicit val taskEncoder: Encoder[Task] = deriveEncoder[Task]
+  val status: String
+
+  def done(
+      requiredTime: Int,
+      doneDateTime: ZonedDateTime = ZonedDateTime.now()
+  ) = Done(
+    id = id,
+    userId = userId,
+    title = title,
+    description = description,
+    deadline = deadline,
+    estimate = estimate,
+    requiredTime = requiredTime,
+    doneDateTime = doneDateTime
+  )
+
+  def update(title: String, description: Option[String], deadline: Option[ZonedDateTime], estimate: Option[Int]): Task
 }

@@ -1,4 +1,4 @@
-package service.auth
+package appservice.auth
 
 import java.math.BigInteger
 import java.security.SecureRandom

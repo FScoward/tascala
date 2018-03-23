@@ -5,8 +5,8 @@ import java.time.{ZonedDateTime}
 
 case class Dones(
   taskId: Long,
-  requiredTime: String,
-  donedatetime: Option[ZonedDateTime] = None) {
+  requiredTime: Int,
+  doneDateTime: ZonedDateTime) {
 
   def save()(implicit session: DBSession = Dones.autoSession): Dones = Dones.save(this)(session)
 
@@ -21,22 +21,22 @@ object Dones extends SQLSyntaxSupport[Dones] {
 
   override val tableName = "Dones"
 
-  override val columns = Seq("task_id", "required_time", "DoneDateTime")
+  override val columns = Seq("task_id", "required_time", "done_date_time")
 
   def apply(d: SyntaxProvider[Dones])(rs: WrappedResultSet): Dones = apply(d.resultName)(rs)
   def apply(d: ResultName[Dones])(rs: WrappedResultSet): Dones = new Dones(
     taskId = rs.get(d.taskId),
     requiredTime = rs.get(d.requiredTime),
-    donedatetime = rs.get(d.donedatetime)
+    doneDateTime = rs.get(d.doneDateTime)
   )
 
   val d = Dones.syntax("d")
 
   override val autoSession = AutoSession
 
-  def find(taskId: Long, requiredTime: String, donedatetime: Option[ZonedDateTime])(implicit session: DBSession = autoSession): Option[Dones] = {
+  def find(taskId: Long)(implicit session: DBSession = autoSession): Option[Dones] = {
     withSQL {
-      select.from(Dones as d).where.eq(d.taskId, taskId).and.eq(d.requiredTime, requiredTime).and.eq(d.donedatetime, donedatetime)
+      select.from(Dones as d).where.eq(d.taskId, taskId)
     }.map(Dones(d.resultName)).single.apply()
   }
 
@@ -68,20 +68,20 @@ object Dones extends SQLSyntaxSupport[Dones] {
 
   def create(
     taskId: Long,
-    requiredTime: String,
-    donedatetime: Option[ZonedDateTime] = None)(implicit session: DBSession = autoSession): Dones = {
+    requiredTime: Int,
+    doneDateTime: ZonedDateTime)(implicit session: DBSession = autoSession): Dones = {
     withSQL {
       insert.into(Dones).namedValues(
         column.taskId -> taskId,
         column.requiredTime -> requiredTime,
-        column.donedatetime -> donedatetime
+        column.doneDateTime -> doneDateTime
       )
     }.update.apply()
 
     Dones(
       taskId = taskId,
       requiredTime = requiredTime,
-      donedatetime = donedatetime)
+      doneDateTime = doneDateTime)
   }
 
   def batchInsert(entities: Seq[Dones])(implicit session: DBSession = autoSession): List[Int] = {
@@ -89,15 +89,15 @@ object Dones extends SQLSyntaxSupport[Dones] {
       Seq(
         'taskId -> entity.taskId,
         'requiredTime -> entity.requiredTime,
-        'donedatetime -> entity.donedatetime))
+        'doneDateTime -> entity.doneDateTime))
     SQL("""insert into Dones(
       task_id,
       required_time,
-      DoneDateTime
+      done_date_time
     ) values (
       {taskId},
       {requiredTime},
-      {donedatetime}
+      {doneDateTime}
     )""").batchByName(params: _*).apply[List]()
   }
 
@@ -106,14 +106,14 @@ object Dones extends SQLSyntaxSupport[Dones] {
       update(Dones).set(
         column.taskId -> entity.taskId,
         column.requiredTime -> entity.requiredTime,
-        column.donedatetime -> entity.donedatetime
-      ).where.eq(column.taskId, entity.taskId).and.eq(column.requiredTime, entity.requiredTime).and.eq(column.donedatetime, entity.donedatetime)
+        column.doneDateTime -> entity.doneDateTime
+      ).where.eq(column.taskId, entity.taskId)
     }.update.apply()
     entity
   }
 
   def destroy(entity: Dones)(implicit session: DBSession = autoSession): Int = {
-    withSQL { delete.from(Dones).where.eq(column.taskId, entity.taskId).and.eq(column.requiredTime, entity.requiredTime).and.eq(column.donedatetime, entity.donedatetime) }.update.apply()
+    withSQL { delete.from(Dones).where.eq(column.taskId, entity.taskId) }.update.apply()
   }
 
 }
