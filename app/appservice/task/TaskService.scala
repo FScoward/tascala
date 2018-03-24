@@ -16,7 +16,8 @@ class TaskService @Inject()(
     taskRepository: TaskRepository,
     iceboxRepository: IceboxRepository,
     userRepository: UserRepository,
-    doneRepository: DoneRepository
+    doneRepository: DoneRepository,
+    doingRepository: DoingRepository
 ) {
   def list(_userId: Long): Either[Throwable, List[Task]] = {
     implicit val session = AutoSession
@@ -69,11 +70,21 @@ class TaskService @Inject()(
     implicit val session = AutoSession
     for {
       _ <- userRepository.findBy(userId) ifNotExists UserNotFound(userId)
-      iceboxTask <- iceboxRepository.findBy(taskId) ifNotExists TaskNotFound(
-        taskId)
-      _ <- iceboxRepository.delete(iceboxTask).toEither
-      _ <- taskRepository.delete(iceboxTask).toEither
-      // TODO delete other relational tables
+      /** delete icebox record */
+      iceboxTask <- iceboxRepository.findBy(taskId).toEither
+      _ <- iceboxTask.map{t => iceboxRepository.delete(t).toEither}.getOrElse(Right(()))
+      _ <- iceboxTask.map{t => taskRepository.delete(t).toEither}.getOrElse(Right(()))
+
+      /** delete doing record */
+      doingTask <- doingRepository.findBy(taskId, userId).toEither
+      _ <- doingTask.map(t => doingRepository.delete(t).toEither).getOrElse(Right(()))
+      _ <- doingTask.map(t => taskRepository.delete(t).toEither).getOrElse(Right(()))
+
+      /** delete done record */
+      doneTask <- doneRepository.findBy(taskId).toEither
+      _ <- doneTask.map(t => doneRepository.delete(t).toEither).getOrElse(Right(()))
+      _ <- doneTask.map(t => taskRepository.delete(t).toEither).getOrElse(Right(()))
+
     } yield ()
   }
 

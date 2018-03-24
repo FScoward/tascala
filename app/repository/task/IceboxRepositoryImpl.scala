@@ -49,13 +49,15 @@ class IceboxRepositoryImpl extends IceboxRepository {
         ))
   }
 
-  override def listBy(userId: ID[User])(implicit session: DBSession): Try[List[Task]] = Try {
+  override def listBy(userId: ID[User])(
+      implicit session: DBSession): Try[List[Task]] = Try {
     withSQL {
       selectFrom(Iceboxs as Iceboxs.i)
         .leftJoin(Tasks as Tasks.t)
         .on(Iceboxs.i.taskId, Tasks.t.taskId)
-        .where.eq(Tasks.t.userId, userId.value)
-    }.map(rs => Tasks(Tasks.t)(rs)).list.apply.map{ t =>
+        .where
+        .eq(Tasks.t.userId, userId.value)
+    }.map(rs => Tasks(Tasks.t)(rs)).list.apply.map { t =>
       Icebox(
         id = ID[Task](t.taskId),
         userId = ID[User](t.userId),
@@ -71,10 +73,8 @@ class IceboxRepositoryImpl extends IceboxRepository {
   override def delete(task: Task)(implicit session: DBSession): Try[Unit] =
     Try {
       withSQL {
-        deleteFrom(Tasks).where
-          .eq(Tasks.column.userId, task.userId.value)
-          .and
-          .eq(Tasks.column.taskId, task.id.value)
+        deleteFrom(Iceboxs).where
+          .eq(Iceboxs.column.taskId, task.id.value)
       }.update.apply
     }
 
