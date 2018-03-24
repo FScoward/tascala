@@ -1,5 +1,6 @@
 package controllers.task
 
+import java.sql.SQLException
 import javax.inject.Inject
 
 import domain.model.ID
@@ -51,12 +52,13 @@ class TaskController @Inject()(
       val taskCreateRequest = request.body
 
       val result = for {
-        task <- taskService.create(userId, taskCreateRequest)
+        task <- taskService.create(ID[User](userId), taskCreateRequest)
       } yield task
 
       result.fold(
         {
           // TODO Exceptionによって振り分ける
+          case _: SQLException => InternalServerError
           case fa => BadRequest(fa.getMessage.asJson)
         },
         fb => {

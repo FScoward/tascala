@@ -29,10 +29,9 @@ class TaskService @Inject()(
   }
 
   def create(
-      _userId: Long,
+      userId: ID[User],
       taskCreateRequest: TaskCreateRequest
   ): Either[Throwable, Task] = {
-    val userId = ID[User](_userId)
     for {
       user <- userRepository.findBy(userId) ifNotExists UserNotFound(userId)
       task = user.addTask(
