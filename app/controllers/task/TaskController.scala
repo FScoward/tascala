@@ -26,7 +26,7 @@ class TaskController @Inject()(
     taskService
       .list(userId)
       .fold(
-        fa => BadRequest(fa.getMessage),
+        fa => fa.errorHandler,
         fb => {
           val result = fb.map(t => {
             TaskResponse(
@@ -79,7 +79,7 @@ class TaskController @Inject()(
       taskService
         .update(ID[User](userId), ID[Task](taskId), request.body)
         .fold(
-          fa => BadRequest(fa.getMessage),
+          fa => fa.errorHandler,
           fb => {
             val response = TaskResponse(
               id = fb.id.value,
@@ -103,7 +103,7 @@ class TaskController @Inject()(
     (for {
       _ <- taskService.delete(userId, taskId)
     } yield
-      ()).fold(fa => BadRequest(fa.getMessage), _ => Ok(userId.value.asJson))
+      ()).fold(fa => fa.errorHandler, _ => Ok(userId.value.asJson))
   }
 
   /**
@@ -117,7 +117,7 @@ class TaskController @Inject()(
       taskService
         .done(userId, taskId, request.body)
         .fold(
-          fa => BadRequest(fa.getMessage),
+          fa => fa.errorHandler,
           fb => {
             val response = TaskResponse(
               id = fb.id.value,
