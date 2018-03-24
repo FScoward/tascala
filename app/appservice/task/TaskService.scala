@@ -45,12 +45,10 @@ class TaskService @Inject()(
   }
 
   def update(
-      _userId: Long,
-      _taskId: Long,
+      userId: ID[User],
+      taskId: ID[Task],
       taskUpdateRequest: TaskUpdateRequest
   ): Either[Throwable, Task] = {
-    val userId = ID[User](_userId)
-    val taskId = ID[Task](_taskId)
     for {
       user <- userRepository.findBy(userId) ifNotExists UserNotFound(userId)
       iceboxTask <- iceboxRepository.findBy(taskId) ifNotExists TaskNotFound(

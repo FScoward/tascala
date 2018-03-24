@@ -77,7 +77,7 @@ class TaskController @Inject()(
   def update(userId: Long, taskId: Long) =
     Action(circe.json[TaskUpdateRequest]) { implicit request =>
       taskService
-        .update(userId, taskId, request.body)
+        .update(ID[User](userId), ID[Task](taskId), request.body)
         .fold(
           fa => BadRequest(fa.getMessage),
           fb => {
