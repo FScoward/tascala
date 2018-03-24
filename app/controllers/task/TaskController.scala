@@ -1,6 +1,5 @@
 package controllers.task
 
-import java.sql.SQLException
 import javax.inject.Inject
 
 import domain.model.ID
@@ -20,6 +19,7 @@ class TaskController @Inject()(
 ) extends AbstractController(cc)
     with Circe
     with ResultImplicit {
+  val logger = Logger(this.getClass())
 
   /** タスク一覧を取得する */
   def list(userId: Long) = Action { implicit request =>
@@ -54,13 +54,8 @@ class TaskController @Inject()(
       val result = for {
         task <- taskService.create(ID[User](userId), taskCreateRequest)
       } yield task
-
       result.fold(
-        {
-          // TODO Exceptionによって振り分ける
-          case _: SQLException => InternalServerError
-          case fa => BadRequest(fa.getMessage.asJson)
-        },
+        fa => fa.errorHandler,
         fb => {
           val response = TaskResponse(
             id = fb.id.value,
