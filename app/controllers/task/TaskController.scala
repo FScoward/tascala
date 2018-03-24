@@ -20,6 +20,7 @@ class TaskController @Inject()(
     with Circe
     with ResultImplicit {
 
+  /** タスク一覧を取得する */
   def list(userId: Long) = Action { implicit request =>
     taskService
       .list(userId)
@@ -54,10 +55,9 @@ class TaskController @Inject()(
       } yield task
 
       result.fold(
-        fa =>
-          fa match {
-            // TODO Exceptionによって振り分ける
-            case _ => BadRequest(fa.getMessage.asJson)
+        {
+          // TODO Exceptionによって振り分ける
+          case fa => BadRequest(fa.getMessage.asJson)
         },
         fb => {
           val response = TaskResponse(
@@ -98,6 +98,7 @@ class TaskController @Inject()(
         )
     }
 
+  /** タスクの削除 */
   def delete(_userId: Long, _taskId: Long) = Action { implicit request =>
     val userId = ID[User](_userId)
     val taskId = ID[Task](_taskId)
