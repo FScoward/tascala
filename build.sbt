@@ -10,6 +10,10 @@ scalaVersion := "2.12.3"
 
 val circeVersion = "0.9.1"
 
+resolvers += Resolver.jcenterRepo
+
+resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
+
 libraryDependencies ++= Seq(
   guice,
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
@@ -27,7 +31,11 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.2",
   "mysql" % "mysql-connector-java" % "6.0.6",
 
-  "org.typelevel" %% "cats-core" % "1.0.1"
+  "org.typelevel" %% "cats-core" % "1.0.1",
+
+  "com.mohiva" %% "play-silhouette" % "5.0.3",
+  "com.mohiva" %% "play-silhouette-crypto-jca" % "5.0.3"
+
 )
 
 // Adds additional packages into Twirl
