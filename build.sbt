@@ -16,6 +16,7 @@ resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositor
 
 libraryDependencies ++= Seq(
   guice,
+  ehcache,
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
   ws,
 //  "com.google.oauth-client" % "google-oauth-client" % "1.23.0"
@@ -34,7 +35,8 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-core" % "1.0.1",
 
   "com.mohiva" %% "play-silhouette" % "5.0.3",
-  "com.mohiva" %% "play-silhouette-crypto-jca" % "5.0.3"
+  "com.mohiva" %% "play-silhouette-crypto-jca" % "5.0.3",
+  "com.mohiva" %% "play-silhouette-password-bcrypt" % "5.0.3"
 
 )
 

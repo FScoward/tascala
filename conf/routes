@@ -8,6 +8,7 @@ GET     /                           controllers.HomeController.index
 GET     /auth/google                controllers.auth.GoogleController.request
 GET     /auth/google/callback       controllers.auth.GoogleController.callback
 GET     /auth/twitter               controllers.auth.AuthenticateController.signIn
+GET     /authenticate/:provider     controllers.auth.SocialAuthController.authenticate(provider)
 
 GET     /user/:userId/tasks                      controllers.task.TaskController.list(userId: Long)
 POST    /user/:userId/tasks                      controllers.task.TaskController.add(userId: Long)
